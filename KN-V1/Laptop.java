@@ -1,0 +1,24 @@
+public class Laptop extends Produkt {
+    private int ram;
+    private int speicherplatz;
+
+    public Laptop(String produktname, String hersteller, double preis, String artikelnummer,
+                  boolean anLager, int ram, int speicherplatz) {
+        super(produktname, hersteller, preis, artikelnummer, anLager);
+        this.ram = ram;
+        this.speicherplatz = speicherplatz;
+    }
+
+    public int getRam() {
+        return ram;
+    }
+
+    public int getSpeicherplatz() {
+        return speicherplatz;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", RAM: " + ram + " GB, Speicherplatz: " + speicherplatz + " GB";
+    }
+}
