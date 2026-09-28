@@ -6,6 +6,7 @@ Aufgaben und Lösungen aus dem TBZ-Modul 320.
 
 - `KN-D1`: Bankkonto und Heizungsbeispiel
 - `KN-D2`: Flugsystem
+- `KN-M2`: Sequenzdiagramm zum D1-Use-Case „Geld überweisen“
 - `KN-V1`: Shop und Produkte
 - `KN-V2`: Polymorphes Ticketsystem
 

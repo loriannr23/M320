@@ -53,6 +53,7 @@ public class Main {
                 + zp.findByStartZeit(LocalTime.of(6, 0), LocalTime.of(12, 0)));
 
         System.out.println("Passagiere total: " + zp.getTotalPassagiere());
+        System.out.println("Flüge von Anna: " + anna.getFluege());
 
         // Entfernen
         lx318.removePassagier(bruno);

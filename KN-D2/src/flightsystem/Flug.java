@@ -14,8 +14,12 @@ import java.util.Objects;
  * dem Flug nicht (Aggregation): Ein {@link Passagier} kann auf mehreren Fluegen gebucht
  * sein.</p>
  *
+ * <p>Die Beziehung ist in beide Richtungen navigierbar. Gefuehrt wird sie allein vom
+ * Flug: {@link #addPassagier(Passagier)} und {@link #removePassagier(Passagier)} setzen
+ * auch die Gegenrichtung beim Passagier, damit beide Seiten nie auseinanderlaufen.</p>
+ *
  * @author Lennis Wirz
- * @version 1.0
+ * @version 1.1
  */
 public class Flug {
     private final String flugnummer;
@@ -48,6 +52,9 @@ public class Flug {
      * gebucht ist, bleibt gebucht. Ist das Flugzeug dagegen voll, ist die Buchung nicht
      * erfuellbar und wird mit einer Ausnahme abgelehnt.</p>
      *
+     * <p>Nach erfolgreicher Buchung wird der Flug auch beim Passagier vermerkt, sodass
+     * {@link Passagier#getFluege()} ihn kennt.</p>
+     *
      * @param passagier der zu buchende Passagier, nicht {@code null}
      * @throws NullPointerException  wenn {@code passagier} {@code null} ist
      * @throws IllegalStateException wenn alle Sitze des Flugzeugs belegt sind
@@ -61,17 +68,21 @@ public class Flug {
             throw new IllegalStateException("Der Flug " + flugnummer + " ist ausgebucht.");
         }
         passagiere.add(passagier);
+        passagier.addFlug(this);
     }
 
     /**
      * Storniert die Buchung eines Passagiers.
      *
-     * <p>War der Passagier gar nicht gebucht, bleibt der Aufruf wirkungslos.</p>
+     * <p>War der Passagier gar nicht gebucht, bleibt der Aufruf wirkungslos. War er es,
+     * wird der Flug auch beim Passagier ausgetragen.</p>
      *
      * @param passagier der zu entfernende Passagier
      */
     public void removePassagier(Passagier passagier) {
-        passagiere.remove(passagier);
+        if (passagiere.remove(passagier)) {
+            passagier.removeFlug(this);
+        }
     }
 
     /**
