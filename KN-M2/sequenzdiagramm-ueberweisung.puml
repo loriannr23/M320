@@ -1,0 +1,34 @@
+@startuml
+title Use Case: Geld überweisen
+
+actor Benutzer
+participant "kontoLorian : Bankkonto" as Sender
+participant "kontoLennis : Bankkonto" as Empfaenger
+
+Benutzer -> Sender: ueberweisen(Empfaenger, 120.0)
+activate Sender
+
+Sender -> Empfaenger: getInhaber()
+activate Empfaenger
+Empfaenger --> Sender: "Lennis"
+deactivate Empfaenger
+
+Sender -> Sender: abheben(120.0)
+activate Sender
+
+alt Saldo ausreichend und Betrag positiv
+    Sender --> Sender: true
+    deactivate Sender
+    Sender -> Empfaenger: einzahlen(120.0)
+    activate Empfaenger
+    Empfaenger --> Sender
+    deactivate Empfaenger
+    Sender --> Benutzer: Überweisung erfolgreich
+else Saldo zu klein oder Betrag ungültig
+    Sender --> Sender: false
+    deactivate Sender
+    Sender --> Benutzer: Überweisung abgebrochen
+end
+
+deactivate Sender
+@enduml

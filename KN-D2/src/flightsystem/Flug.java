@@ -29,10 +29,13 @@ public class Flug {
             throw new IllegalStateException("Der Flug " + flugnummer + " ist ausgebucht.");
         }
         passagiere.add(passagier);
+        passagier.addFlug(this);
     }
 
     public void removePassagier(Passagier passagier) {
-        passagiere.remove(passagier);
+        if (passagiere.remove(passagier)) {
+            passagier.removeFlug(this);
+        }
     }
 
     public List<Passagier> getPassagiere() {
