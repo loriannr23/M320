@@ -2,7 +2,21 @@ package flightsystem;
 
 import java.time.LocalTime;
 
+/**
+ * Startpunkt des Flugsystems: baut ein Beispielszenario auf und zeigt das Zusammenspiel
+ * der Klassen {@link Flugzeug}, {@link Flug}, {@link Passagier} und {@link Zeitplan}.
+ *
+ * @author Lennis Wirz
+ * @version 1.0
+ */
 public class Main {
+
+    /**
+     * Fuehrt das Beispielszenario aus: zwei Fluege ab Zuerich, drei Passagiere, Auswertungen
+     * auf dem Zeitplan und zum Schluss eine Stornierung.
+     *
+     * @param args Kommandozeilenargumente, werden nicht verwendet
+     */
     public static void main(String[] args) {
 
         Flugzeug a320 = new Flugzeug("Airbus A320", 2, 3);
@@ -15,6 +29,7 @@ public class Main {
         Passagier bruno = new Passagier("Bruno Keller", "CH7654321");
         Passagier cem = new Passagier("Cem Yildiz", "CH1122334");
 
+        // Anna ist auf beiden Fluegen gebucht: dasselbe Objekt, zwei Buchungen.
         lx318.addPassagier(anna);
         lx318.addPassagier(bruno);
 
