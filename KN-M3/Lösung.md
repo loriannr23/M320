@@ -223,7 +223,9 @@ Das **Diamantproblem** der Mehrfachvererbung: Klasse `D` erbt von `B` und `C`, d
 
 ```plantuml
 @startuml
-class A { + methode() }
+class A {
+  + methode()
+}
 class B
 class C
 class D
