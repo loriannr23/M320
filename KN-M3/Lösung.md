@@ -109,20 +109,22 @@ Getraenk <|.. Cola
 Getraenk <|.. Wasser
 
 ' ---------- HAT-Beziehungen ----------
-BestellpositionDecorator o--> "1" Bestellposition : inner
-MenuDecorator o--> "1" Getraenk : getraenk
-Bestellung o--> "*" Bestellposition : positionen
+BestellpositionDecorator "0..*" o-- "1" Bestellposition : inner
+MenuDecorator "0..*" o-- "1" Getraenk : getraenk
+Bestellung "1" o-- "1..*" Bestellposition : positionen
 
 @enduml
 ```
 
-### Legende (Pfeile)
+### Legende (Pfeile und Multiplizitäten)
 
 | Symbol | Bedeutung | Im Diagramm |
 |---|---|---|
 | `<\|..` (gestrichelt, hohles Dreieck) | **IST-ein** durch *Interface-Realisierung* (`implements`) | `Burger`, `BestellpositionDecorator`, `Cola`, `Wasser` |
 | `<\|--` (durchgezogen, hohles Dreieck) | **IST-ein** durch *Vererbung* (`extends`) | `ExtraBacon extends BestellpositionDecorator` usw. |
-| `o-->` (offene Raute) | **HAT-ein** (Aggregation, Teil kann auch ohne Ganzes existieren) | Decorator *hat* eine `Bestellposition`; `Bestellung` hat Positionen |
+| `o--` (offene Raute, Linie ohne Pfeil, Multiplizitäten an beiden Enden) | **HAT-ein** (Aggregation, Teil kann auch ohne Ganzes existieren) | Decorator *hat* genau eine `Bestellposition` (`1`), eine `Bestellposition` kann von `0..*` Decorators umhüllt werden; `Bestellung` (`1`) hat `1..*` Positionen |
+
+Multiplizitäten: `0..*` = null bis beliebig viele (0..n), `1..*` = mindestens eins bis beliebig viele (1..m), `1` = genau eins.
 
 Der Kern des Decorators: `BestellpositionDecorator` **ist eine** `Bestellposition` *und* **hat eine** `Bestellposition`. Dadurch lassen sich Decorators beliebig ineinander verschachteln.
 
