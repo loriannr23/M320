@@ -1,41 +1,24 @@
 # KN-D3-Lorian – Football Match Tracker
 
-## Kurzbeschreibung
+## Idee
 
-Die Konsolenanwendung zeigt Bundesliga-Spiele und ihren Spielverlauf mithilfe der OpenLigaDB-API an. Man kann Spiele nach Spieltag oder Team suchen oder ein einzelnes Match über seine Match-ID öffnen. Die Anwendung zeigt den Spielstand sowie erfasste Tore mit Spielminute, Torschütze, Spielstand nach dem Tor und Kennzeichnung für Elfmeter, Eigentor oder Nachspielzeit.
+Die Konsolen-App fragt nach einem Bundesliga-Spieltag und zeigt die Spiele, Spielstände und erfassten Tore aus der OpenLigaDB an.
 
-Der Umfang ist bewusst kleiner als eine vollständige OneFootball-App: KN-D3 konzentriert sich auf das Abrufen und Anzeigen von Spielen und Toren. OpenLigaDB stellt die Daten ohne API-Key als JSON bereit. Die Daten werden durch eine Community gepflegt; deshalb können einzelne Wettbewerbe oder Ereignisse unvollständig sein.
+## D3: Delegation und Trennung
 
-API-Dokumentation: <https://api.openligadb.de/index.html>
+- Main startet nur die Anwendung.
+- ConsoleView liest den Spieltag ein und zeigt Ergebnisse.
+- FootballApplication verbindet Oberfläche und Service.
+- FootballService prüft den Spieltag und delegiert die Abfrage an OpenLigaDbClient. Dabei gibt er Saison und Spieltag weiter.
+- OpenLigaDbClient fragt die API ab. JsonParser liest die JSON-Antwort in Match- und Goal-Objekte.
+- InvalidInputException meldet eine ungültige Eingabe.
 
-## Starten
+Ablauf: ConsoleView → FootballApplication → FootballService → OpenLigaDbClient → OpenLigaDB.
 
-Voraussetzung ist ein JDK 11 oder neuer sowie eine Internetverbindung. Unter Windows im Ordner `KN-D3` `run.bat` ausführen. Das Skript kompiliert die Java-Dateien und startet die Anwendung. Es ist kein API-Key nötig.
+## Start
 
-## Bedienung
+JDK 11 oder neuer und eine Internetverbindung werden benötigt. Im Ordner KN-D3-Lorian die Datei run.bat ausführen. Danach einen Spieltag von 1 bis 34 eingeben.
 
-1. Spiele eines Bundesliga-Spieltags anzeigen. Ein leeres Saisonfeld verwendet automatisch das aktuelle Saison-Startjahr.
-2. Alle Spiele eines Teams in einer Saison suchen; ein Teil des Teamnamens reicht.
-3. Match-ID eingeben, um Spielinformationen und Torereignisse anzuzeigen.
-0. Programm beenden.
+## Besprechung
 
-Beispiele für die API: Spieltag 7 der Saison 2026 mit Saison-Startjahr `2026`; Team-Suche `Bayern`; Match-Details über eine Match-ID aus der Spieltags- oder Teamliste.
-
-## Delegation und Zuständigkeiten
-
-- `Main` startet die Anwendung.
-- `FootballApplication` koordiniert Menü, Service-Aufrufe und Fehlerausgabe.
-- `ConsoleView` übernimmt Ein- und Ausgabe.
-- `FootballService` validiert die Eingaben und delegiert die Datenabfrage an `FootballDataProvider`.
-- `OpenLigaDbClient` implementiert `FootballDataProvider`, ruft die HTTP-API auf und bildet JSON-Daten auf die eigenen Modelle `Match`, `Team` und `Goal` ab.
-- `JsonParser` liest die JSON-Antwort ohne zusätzliche Bibliothek.
-
-## Exceptions und Eingabeprüfung
-
-- `InvalidInputException` meldet ungültige Saisonjahre, Spieltage, Match-IDs oder Teamnamen.
-- `FootballApiException` meldet Netzwerk-, HTTP- und Antwortformatfehler.
-- `FootballApplication` fängt diese Fehler ab und zeigt eine verständliche Meldung, statt das Programm unerwartet zu beenden.
-
-## Grenzen
-
-Die Anwendung liest Daten aus der OpenLigaDB und verändert keine Spielergebnisse. Sie zeigt die von der API gelieferten Ereignisse an; die Aktualität und Vollständigkeit hängen von den dort gepflegten Daten ab.
+Die Delegation findet in FootballService.getMatchday statt: Der Service übergibt Saison und Spieltag an den API-Client und erhält eine Liste von Spielen zurück. Eingabe/Ausgabe, Anwendungsablauf, Prüfung und API-Aufruf liegen in getrennten Klassen.

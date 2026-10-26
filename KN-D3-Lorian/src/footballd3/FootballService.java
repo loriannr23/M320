@@ -1,39 +1,33 @@
 package footballd3;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 public final class FootballService {
-    private final FootballDataProvider dataProvider;
+    private final OpenLigaDbClient dataProvider;
 
-    public FootballService(FootballDataProvider dataProvider) {
-        if (dataProvider == null) {
-            throw new IllegalArgumentException("Ein FootballDataProvider ist erforderlich.");
-        }
+    public FootballService(OpenLigaDbClient dataProvider) {
         this.dataProvider = dataProvider;
     }
 
-    public int getCurrentSeasonStartYear() {
+    public List<Match> getMatchday(String matchdayText)
+            throws InvalidInputException, IOException {
+        int matchday;
+        try {
+            matchday = Integer.parseInt(matchdayText.trim());
+        } catch (NumberFormatException exception) {
+            throw new InvalidInputException("Der Spieltag muss eine Zahl von 1 bis 34 sein.");
+        }
+
+        if (matchday < 1 || matchday > 34) {
+            throw new InvalidInputException("Der Spieltag muss zwischen 1 und 34 liegen.");
+        }
+
         LocalDate today = LocalDate.now();
-        return today.getMonthValue() >= 7 ? today.getYear() : today.getYear() - 1;
-    }
+        int season = today.getMonthValue() >= 7 ? today.getYear() : today.getYear() - 1;
 
-    public List<Match> getMatchday(String seasonText, String matchdayText)
-            throws InvalidInputException, FootballApiException {
-        int season = InputValidator.parseSeason(seasonText, getCurrentSeasonStartYear());
-        int matchday = InputValidator.parseMatchday(matchdayText);
+        // Delegation: Die API-Abfrage wird an den OpenLigaDB-Client weitergegeben.
         return dataProvider.getMatchdayMatches(season, matchday);
-    }
-
-    public List<Match> getMatchesForTeam(String teamText, String seasonText)
-            throws InvalidInputException, FootballApiException {
-        String teamName = InputValidator.validateTeamName(teamText);
-        int season = InputValidator.parseSeason(seasonText, getCurrentSeasonStartYear());
-        return dataProvider.getMatchesByTeam(season, teamName);
-    }
-
-    public Match getMatchDetails(String matchIdText) throws InvalidInputException, FootballApiException {
-        int matchId = InputValidator.parseMatchId(matchIdText);
-        return dataProvider.getMatch(matchId);
     }
 }
